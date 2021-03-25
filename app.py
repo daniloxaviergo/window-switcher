@@ -4,6 +4,7 @@ from window_switcher.window import Window
 import gi
 import timeit
 import sys
+import os
 
 # start = timeit.default_timer()
 
@@ -16,6 +17,7 @@ from gi.repository import Gdk
 screen = Gdk.Screen.get_default()
 monitor = screen.get_monitor_at_window(screen.get_active_window())
 monitor = screen.get_monitor_geometry(monitor)
+os.popen('subl --background --command "save_tabs_file"').read()
 
 ws = monitor.width
 hs = monitor.height - 200
@@ -25,7 +27,8 @@ h = 40
 options = {
   'inicial_find': False,
   'only_windows': False,
-  'only_tabs': False
+  'only_tabs': False,
+  'only_sublime': False
 }
 
 if len(sys.argv) > 1:

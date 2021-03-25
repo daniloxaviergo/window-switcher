@@ -3,11 +3,13 @@ from subprocess import check_output
 import sys
 import os
 import re
+import json
 
 sys.path.append("/home/danilo/scripts/")
 
 from wmctrl_window import WmctrlWindow
 from chromix_too_tab import ChromixTooTab
+from sublime_tab import SublimeTab
 
 def get_windows(options):
     all_windows = []
@@ -63,5 +65,20 @@ def get_windows(options):
                 'set_focus': tab.set_focus,
                 'name': prefix + tab.domain + ' ' + tab.title.lower()
             })
+
+    all_sublime = []
+    if not options['only_sublime']:
+        str_json = open("/home/danilo/scripts/sublime_tabs.json", "r").read()
+        sublime_tabs = json.loads(str_json)
+
+        for window_id in sublime_tabs.keys():
+            for idx, path_file in enumerate(sublime_tabs[window_id], start=0):
+                sublime_tab = SublimeTab(window_id, path_file, idx)
+                all_windows.append({
+                    'id': sublime_tab.id,
+                    'type': sublime_tab.type,
+                    'set_focus': sublime_tab.set_focus,
+                    'name': 's ' + sublime_tab.title
+                })
 
     return [all_windows, current_window]
