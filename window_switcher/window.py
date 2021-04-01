@@ -69,8 +69,10 @@ class Window:
         self.main_entry.bind('<Down>', self.select_next)
         self.main_entry.bind('<Return>', self.select_window)
         self.main_entry.bind('<Control-BackSpace>', self.entry_ctrl_bs)
+        self.main_entry.bind('<Alt-BackSpace>', self.entry_ctrl_bs)
         self.listbox.bind('<Double-Button>', self.select_window)
         self.root.bind('<Escape>', lambda e: sys.exit())
+        self.root.bind("<FocusOut>", lambda e: sys.exit())
 
         # sv.set('k1m1')
         # self.resize(Window.MAX_FOUND)
@@ -101,24 +103,37 @@ class Window:
         for word in words:
             wword = unicode(word, 'utf-8')
             wword = unicodedata.normalize('NFD', wword).encode('ascii', 'ignore')
-            mat.append(wword)
-
-        # (?<!\S)(?:t\shub.*)(?!\S)
-        match_string = r'({})'.format("|".join(mat)) 
+            if len(wword) > 0:
+                mat.append(wword)
 
         # found = [window for window in self.all_windows if window['name'].find(text) != -1]
         # found = [window for window in self.all_windows if any(re.findall(r'|'.join(list_words), window['name']))]
         # found = [window for window in self.all_windows if any(re.findall(match_string, window['name']))]
 
+        windows = self.all_windows
+        if len(mat) > 0:
+            window_types = {
+                't': 'chromix-too',
+                'w': 'wmctrl',
+                's': 'sublime'
+
+            }
+            if window_types.get(mat[0]):
+                windows = [window for window in windows if window['type'] == window_types.get(mat[0])]
+                mat.remove(mat[0])
+
+        # (?<!\S)(?:t\shub.*)(?!\S)
+        match_string = r'({})'.format("|".join(mat))
+
         found = []
-        for window in self.all_windows:
-            if len(text) == 0:
+        for window in windows:
+            if len(mat) == 0:
                 found.append(window)
                 continue;
 
             window_name = unicodedata.normalize('NFD', window['name']).encode('ascii', 'ignore')
             result = re.findall(match_string, window_name)
-            if any(result) and len(set(result)) == len(words):
+            if any(result) and len(set(result)) == len(mat):
                 found.append(window)
         # print(found)
 
