@@ -72,11 +72,15 @@ class Window:
         self.main_entry.bind('<Alt-BackSpace>', self.entry_ctrl_bs)
         self.listbox.bind('<Double-Button>', self.select_window)
         self.root.bind('<Escape>', lambda e: sys.exit())
-        self.root.bind("<FocusOut>", lambda e: sys.exit())
+        self.root.bind("<FocusOut>", self.on_lost_focus)
 
         # sv.set('k1m1')
         # self.resize(Window.MAX_FOUND)
         self.initial_get(None)
+
+    def on_lost_focus(self, event):
+        if str(event.widget.event_info.im_class) == 'Tkinter.Tk':
+            sys.exit(0)
 
     def initial_get(self, event):
         [self.all_windows, current_window] = get_windows(self.options)
