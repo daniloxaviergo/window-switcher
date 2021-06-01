@@ -43,7 +43,11 @@ def get_windows(options):
 
     all_tabs = []
     if not options['only_windows']:
-        chromix_out = check_output(['chromix-too', 'ls']).decode('utf-8')
+        try:
+            chromix_out = check_output(['chromix-too', 'ls']).decode('utf-8')
+        except BaseException:
+            chromix_out = ''
+
         chromix_out = chromix_out.split('\n')
 
         if len(chromix_out) < 2:
