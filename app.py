@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import subprocess
 from tkinter import Tk
 from window_switcher.window import Window
@@ -8,8 +11,8 @@ import os
 
 # start = timeit.default_timer()
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 
 gi.require_version('Gdk', '3.0') 
 from gi.repository import Gdk

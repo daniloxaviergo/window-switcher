@@ -17,7 +17,7 @@ def get_windows(options):
 
     if not options['only_tabs']:
         wmctrl_out = check_output(['wmctrl', '-dliGux'])#.decode('utf-8')
-        wmctrl_out = wmctrl_out.split('\n')
+        wmctrl_out = wmctrl_out.decode().split('\n')
         wmctrl_out.pop()
 
         outt = os.popen('/home/danilo/scripts/get_current_window.sh').read()
@@ -26,7 +26,8 @@ def get_windows(options):
 
         current_window = None
         for window in wmctrl_out[::-1]:
-            ctrlWindow = WmctrlWindow(unicode(window, 'utf-8'))
+            # ctrlWindow = WmctrlWindow(unicode(window, 'utf-8'))
+            ctrlWindow = WmctrlWindow(window)
 
             if window.find(current_window_id) >= 0:
                 current_window = WmctrlWindow(window)

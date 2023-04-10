@@ -79,7 +79,7 @@ class Window:
         self.initial_get(None)
 
     def on_lost_focus(self, event):
-        if str(event.widget.event_info.im_class) == 'Tkinter.Tk':
+        if str(event.widget.winfo_class()) == 'Tk':
             sys.exit(0)
 
     def initial_get(self, event):
@@ -100,13 +100,12 @@ class Window:
         return 'break'
 
     def find_windows(self, text):
-        text = text.lower().encode("utf-8")
+        text = text.lower()#.encode("utf-8")
         words = re.split(r'\s+', text)
 
         mat = []
         for word in words:
-            wword = unicode(word, 'utf-8')
-            wword = unicodedata.normalize('NFD', wword).encode('ascii', 'ignore')
+            wword = unicodedata.normalize('NFD', word)
             if len(wword) > 0:
                 mat.append(wword)
 
@@ -120,7 +119,6 @@ class Window:
                 't': 'chromix-too',
                 'w': 'wmctrl',
                 's': 'sublime'
-
             }
             if window_types.get(mat[0]):
                 windows = [window for window in windows if window['type'] == window_types.get(mat[0])]
@@ -135,7 +133,7 @@ class Window:
                 found.append(window)
                 continue;
 
-            window_name = unicodedata.normalize('NFD', window['name']).encode('ascii', 'ignore')
+            window_name = unicodedata.normalize('NFD', window['name'])
             result = re.findall(match_string, window_name)
             if any(result) and len(set(result)) == len(mat):
                 found.append(window)
